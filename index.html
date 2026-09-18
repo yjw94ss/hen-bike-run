@@ -931,7 +931,7 @@ el('restart-btn').onclick = startGame;
 el('pause-btn').onclick = togglePause;
 
 // ---------- 操作：键盘 + 触屏按钮 + 滑动 ----------
-function doJump(){ if(state!=='playing')return; if(grounded){ grounded=false; jumpV=8.8; sfx.jump(); } }
+function doJump(){ if(state!=='playing')return; if(grounded){ grounded=false; jumpV=9.8; sfx.jump(); } }
 function doSlide(){ if(state!=='playing')return; slideT=0.75; sfx.slide(); }
 function moveLane(d){
   if(state!=='playing')return;
