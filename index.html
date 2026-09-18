@@ -334,16 +334,31 @@ function makeCloud(){
   scene.add(g); clouds.push(g);
 }
 for(let i=0;i<(LOW_POWER?7:12);i++) makeCloud();
-// 飞鸟
+// 飞鸟：白色海鸥
 const birds = [];
 function makeBird(){
   const g = new THREE.Group();
-  const m = new THREE.MeshBasicMaterial({color:0x33404f, side:THREE.DoubleSide});
-  const wgeo = new THREE.PlaneGeometry(1.1,0.32);
-  const wl = new THREE.Mesh(wgeo,m); wl.position.x=-0.55; g.add(wl);
-  const wr = new THREE.Mesh(wgeo,m); wr.position.x=0.55; g.add(wr);
-  g.userData={wl,wr,ph:Math.random()*6, sp:2+Math.random()*2};
-  g.position.set(-50+Math.random()*100, 11+Math.random()*8, -55-Math.random()*40);
+  const white = new THREE.MeshStandardMaterial({color:0xf7fafc, roughness:0.9});
+  const dark = new THREE.MeshStandardMaterial({color:0x5a6b7d, roughness:0.9});
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.26,10,8), white);
+  body.scale.set(1,0.8,2.2); g.add(body);
+  const headB = new THREE.Mesh(new THREE.SphereGeometry(0.17,10,8), white);
+  headB.position.set(0,0.14,-0.52); g.add(headB);
+  const beakB = new THREE.Mesh(new THREE.ConeGeometry(0.06,0.2,8), new THREE.MeshStandardMaterial({color:0xff9f1c, roughness:0.6}));
+  beakB.rotation.x = -Math.PI/2; beakB.position.set(0,0.12,-0.74); g.add(beakB);
+  function wing(side){
+    const pivot = new THREE.Group();
+    const w = new THREE.Mesh(new THREE.BoxGeometry(1.15,0.06,0.4), white);
+    w.position.x = side*0.58; pivot.add(w);
+    const tip = new THREE.Mesh(new THREE.BoxGeometry(0.38,0.05,0.32), dark);
+    tip.position.x = side*1.28; pivot.add(tip);
+    g.add(pivot);
+    return pivot;
+  }
+  const wl = wing(-1), wr = wing(1);
+  g.userData={wl,wr,ph:Math.random()*6, sp:1.5+Math.random()*1.5};
+  g.rotation.y = -Math.PI/2; // 头朝飞行方向
+  g.position.set(-55+Math.random()*110, 14+Math.random()*7, -60-Math.random()*40);
   scene.add(g); birds.push(g);
 }
 for(let i=0;i<4;i++) makeBird();
@@ -1005,12 +1020,12 @@ function animate(){
     clouds.forEach(c=>{ c.position.z += dz*0.12; c.position.x += dt*0.35; if(c.position.z>25){c.position.z=-115; c.position.x=(Math.random()-0.5)*90;} });
     birds.forEach(b=>{
       b.position.x += b.userData.sp*dt*3;
-      if(b.position.x>55) { b.position.x=-55; b.position.y=11+Math.random()*8; }
-      const f = Math.sin(t*10+b.userData.ph)*0.55;
-      b.userData.wl.rotation.y=0; b.userData.wl.rotation.z=f; b.userData.wr.rotation.z=-f;
+      if(b.position.x>60) { b.position.x=-60; b.position.y=14+Math.random()*7; }
+      const f = Math.sin(t*9+b.userData.ph)*0.5;
+      b.userData.wl.rotation.z = -f; b.userData.wr.rotation.z = f;
     });
     windmills.forEach(w=>{ w.rotation.z += dt*(1.2+speed*0.03); });
-    buntings.forEach(b=>{ b.userData.flags.forEach((f,i)=>{ f.rotation.y = Math.sin(t*5+i*0.9)*0.45; }); });
+    buntings.forEach(b=>{ b.userData.flags.forEach((f,i)=>{ f.rotation.y = Math.sin(t*5+i*0.9)*0.22; }); });
 
     // 风线
     const showStreak = speed>22;
