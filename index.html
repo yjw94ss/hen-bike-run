@@ -788,7 +788,7 @@ function makeSheep(){
     const l = new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.62,8), std(0x3a3a3a,0.9));
     l.position.set(x,0.31,z); g.add(l);
   });
-  g.userData = { type:'block', h:1.85 };
+  g.userData = { type:'low', h:1.5 }; // 羊：可以跳过去
   return g;
 }
 function makeCorn(){
